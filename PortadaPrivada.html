@@ -1,0 +1,46 @@
+//Portada para los usuarios con permisos avanzados en el sitio
+
+$(document).ready(function () {
+  modificarNavegacionDSI();
+  // getList('normas', 'normas', "");
+  // getList('Mapa', 'mapaProcesos', "");
+  // getOnlyList('Seguimiento', 'seguimiento', "&$top=9", '/URL/XX/X/SitePages/Inicio.aspx', 'Seguimiento', 'Nro');
+  // newFile('Seguimiento CO-GDE', '/URLSuperior/URL/X/SitePages/Inicio.aspx', 'seguimiento', 'Lista', 'Seguimiento');
+ $("#sectionAreas .pane-content").show();
+  getMisionYFunciones('Inicio', 'inicio', '/URLSuperior/URL/X/SitePages/Inicio.aspx', 'Inicio');
+});
+
+function getMisionYFunciones(nameList, idDiv, source, urlNameList) {
+  console.log("nameList: " + nameList);
+  let Url = "";
+  let divContenedor = $("#" + idDiv);
+  Url = _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('" + nameList + "')/items?&$top=6";
+  console.log(Url);
+  $.ajax({
+    url: Url,
+    method: "GET",
+    headers: { "Accept": "application/json; odata=verbose" },
+    success: function (data) {
+      data = data.d.results;
+      if (data.length > 0) {
+        $.each(data, function (index, value) {
+          console.log(value);
+          var htmlInfo = '<div class="col-12">'
+            + '  <div class="panel-body">'
+            + '      <p>' + value.Cuerpo + '</p>'
+            + '  </div> '
+            + ' </div>';
+          divContenedor.append(htmlInfo);
+        });
+
+      }
+      else {
+        divContenedor.append('<span class="text-mutted m-1">No existen vínculos en esta vista.</span>');
+      }
+
+    },
+    error: function (data) {
+      console.log(data);
+    }
+  });
+}
